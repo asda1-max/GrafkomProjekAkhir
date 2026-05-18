@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grafkom 2D - Algoritma Primitif</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h1>Grafkom 2D</h1>
+      <p class="subtitle">Garis, Lingkaran, Elips + Transformasi</p>
+
+      <div class="panel">
+        <h2>Primitif</h2>
+        <div class="row">
+          <button id="tool-line" class="btn primary">Garis (DDA)</button>
+          <button id="tool-circle" class="btn">Lingkaran (Midpoint)</button>
+          <button id="tool-ellipse" class="btn">Elips (Midpoint)</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Warna</h2>
+        <div class="row">
+          <label>Stroke</label>
+          <input id="stroke-color" type="color" value="#39c6ff" />
+        </div>
+        <div class="row">
+          <label>Glow</label>
+          <input id="glow-toggle" type="checkbox" checked />
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Transformasi</h2>
+        <div class="row">
+          <button id="select-prev" class="btn">Pilih Prev</button>
+          <button id="select-next" class="btn">Pilih Next</button>
+        </div>
+        <div class="row">
+          <label>Translasi X</label>
+          <input id="tx" type="range" min="-200" max="200" value="0" />
+          <span id="tx-val">0</span>
+        </div>
+        <div class="row">
+          <label>Translasi Y</label>
+          <input id="ty" type="range" min="-200" max="200" value="0" />
+          <span id="ty-val">0</span>
+        </div>
+        <div class="row">
+          <label>Rotasi</label>
+          <input id="rot" type="range" min="-180" max="180" value="0" />
+          <span id="rot-val">0°</span>
+        </div>
+        <div class="row">
+          <label>Skala</label>
+          <input id="scale" type="range" min="10" max="300" value="100" />
+          <span id="scale-val">1.00</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Animasi</h2>
+        <div class="row">
+          <button id="toggle-anim" class="btn accent">Start</button>
+          <button id="reset" class="btn">Reset</button>
+        </div>
+        <div class="row">
+          <label>Kecepatan</label>
+          <input id="speed" type="range" min="1" max="10" value="4" />
+          <span id="speed-val">4</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Gimmick</h2>
+        <div class="row">
+          <button id="confetti" class="btn">Confetti</button>
+          <button id="clear" class="btn danger">Clear</button>
+        </div>
+      </div>
+
+      <p class="hint">Klik & drag di canvas untuk menggambar. Klik objek untuk memilih.</p>
+    </aside>
+
+    <main class="canvas-wrap">
+      <canvas id="canvas" width="960" height="640"></canvas>
+      <div class="status" id="status">Siap menggambar</div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

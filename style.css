@@ -1,0 +1,146 @@
+:root {
+  --bg: #0e1120;
+  --panel: #161a2d;
+  --panel-2: #1c2138;
+  --text: #e6eaff;
+  --muted: #92a0c6;
+  --primary: #39c6ff;
+  --accent: #ffb347;
+  --danger: #ff5c7c;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #141b2f 0%, #0b0f1c 60%);
+  color: var(--text);
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, var(--panel) 0%, #121628 100%);
+  padding: 20px;
+  border-right: 1px solid #242944;
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+}
+
+.subtitle {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.panel {
+  background: var(--panel-2);
+  border: 1px solid #262c49;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.panel h2 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.row:last-child {
+  margin-bottom: 0;
+}
+
+label {
+  font-size: 12px;
+  color: var(--muted);
+  width: 90px;
+}
+
+input[type="range"] {
+  flex: 1;
+}
+
+.btn {
+  background: #20274a;
+  color: var(--text);
+  border: 1px solid #2c3560;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 12px;
+}
+
+.btn:hover {
+  background: #2a3361;
+}
+
+.btn.primary {
+  background: #1e3448;
+  border-color: #2b4d6a;
+  color: var(--primary);
+}
+
+.btn.accent {
+  background: #3a2d1c;
+  border-color: #6b4c24;
+  color: var(--accent);
+}
+
+.btn.danger {
+  background: #3a1d28;
+  border-color: #6b243a;
+  color: var(--danger);
+}
+
+.canvas-wrap {
+  position: relative;
+  padding: 16px;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  background: #0b0f1c;
+  border-radius: 16px;
+  border: 1px solid #232846;
+  box-shadow: 0 0 30px rgba(57, 198, 255, 0.08);
+}
+
+.status {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  padding: 8px 12px;
+  background: rgba(16, 20, 34, 0.8);
+  border: 1px solid #262c49;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+}
