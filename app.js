@@ -111,8 +111,7 @@ let polygonPts   = [];        // Titik-titik sementara polygon
 let undoStack    = [];
 let redoStack    = [];
 let zoom         = 1;
-let fillCanvas   = null;
-let fillCtx      = null;
+let fillLayer    = null;
 
 // Koordinat mouse (logical pixel canvas)
 let mouseX = 0, mouseY = 0;
@@ -788,7 +787,7 @@ function render() {
   if (showGridEl.checked) drawGrid();
 
   // Flood fill layer
-  if (fillCanvas) ctx.drawImage(fillCanvas, 0, 0);
+  if (fillLayer) ctx.putImageData(fillLayer, 0, 0);
 
   // Semua shape
   for (const shape of shapes) drawShape(shape);
@@ -900,9 +899,9 @@ function distPointSegment(p, a, b) {
 // ============================================================
 
 function floodFill(sx, sy, fillColor) {
-  // Ambil pixel data dari canvas
-  const imageData = ctx.getImageData(0, 0, W, H);
-  const data      = imageData.data;
+  // Ambil pixel data dari canvas saat ini
+  const canvasData = ctx.getImageData(0, 0, W, H);
+  const data       = canvasData.data;
 
   // Warna target di titik seed
   const idx = (sy * W + sx) * 4;
@@ -918,48 +917,44 @@ function floodFill(sx, sy, fillColor) {
     return data[i] === tr && data[i+1] === tg && data[i+2] === tb && data[i+3] === ta;
   }
 
-  function setColor(i) {
-    data[i]   = fill.r;
-    data[i+1] = fill.g;
-    data[i+2] = fill.b;
-    data[i+3] = fill.a;
+  function setFillColor(i) {
+    fillLayer.data[i]   = fill.r;
+    fillLayer.data[i+1] = fill.g;
+    fillLayer.data[i+2] = fill.b;
+    fillLayer.data[i+3] = fill.a;
   }
 
-  // Queue: array [x, y]
+  if (!fillLayer) {
+    fillLayer = ctx.createImageData(W, H);
+  }
+
   const queue = [[sx, sy]];
-  const visited = new Uint8Array(W * H); // flag sudah dikunjungi
+  const visited = new Uint8Array(W * H);
 
   while (queue.length > 0) {
     const [x, y] = queue.pop();
     if (x < 0 || x >= W || y < 0 || y >= H) continue;
     if (visited[y * W + x]) continue;
 
-    // Cari batas kiri
     let left = x;
     while (left > 0 && colorMatch((y * W + left - 1) * 4)) left--;
-
-    // Cari batas kanan
     let right = x;
     while (right < W - 1 && colorMatch((y * W + right + 1) * 4)) right++;
 
-    // Isi span horizontal
     for (let i = left; i <= right; i++) {
       if (visited[y * W + i]) continue;
       const pi = (y * W + i) * 4;
       if (colorMatch(pi)) {
-        setColor(pi);
+        setFillColor(pi);
         visited[y * W + i] = 1;
-        // Tambah baris atas dan bawah
         if (y > 0)     queue.push([i, y - 1]);
         if (y < H - 1) queue.push([i, y + 1]);
       }
     }
   }
 
-  ctx.putImageData(imageData, 0, 0);
-  if (fillCtx) {
-    fillCtx.putImageData(imageData, 0, 0);
-  }
+  // Segera tampilkan hasil fill yang baru
+  ctx.putImageData(fillLayer, 0, 0);
 }
 
 function hexToRGBA(hex) {
@@ -1346,7 +1341,7 @@ clearCanvasBtn.addEventListener("click", () => {
   shapes = [];
   selectedIndex = -1;
   polygonPts = [];
-  if (fillCtx) fillCtx.clearRect(0, 0, W, H);
+  if (fillLayer) fillLayer.data.fill(0);
   updateTransformUI(null);
   updateObjCount();
   setStatus("Canvas dibersihkan.");
@@ -1400,10 +1395,7 @@ cancelPolyBtn.addEventListener("click", () => {
 // ============================================================
 
 function init() {
-  fillCanvas = document.createElement("canvas");
-  fillCanvas.width = W;
-  fillCanvas.height = H;
-  fillCtx = fillCanvas.getContext("2d");
+  fillLayer = ctx.createImageData(W, H);
 
   setTool("point");
   updateTransformUI(null);
