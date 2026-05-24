@@ -3,195 +3,493 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grafika Komputer 2D — Interactive Editor</title>
+  <title>GrafKom 2D — Interactive Editor | Kelompok 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<div class="app">
 
-<div class="app-shell">
+  <!-- ═══ MENUBAR ═══ -->
+  <header class="menubar">
 
-  <!-- ===== SIDEBAR KIRI ===== -->
-  <aside class="sidebar">
+    <div class="app-logo">
+      <div class="logo-mark">GK</div>
+      <div class="logo-text">GrafKom 2D</div>
+    </div>
 
-    <!-- Header -->
-    <div class="sidebar-header">
-      <div class="app-title">Grafika Komputer 2D</div>
-      <div class="app-subtitle">Interactive Editor</div>
-      <!-- Info kelompok -->
-      <div class="group-info">
-        <div class="group-label">Anggota Kelompok 2</div>
-        <div class="group-members" id="group-members">
-          <div class="member">1. Rakha Taufiqurrahman F A</div>
-          <div class="member">2. Taufiq Candra Kurniawan</div>
-          <div class="member">3. Gorbi Ello Pasaribu</div>
+    <div class="menubar-chips">
+      <div class="stat-chip">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="width:11px;height:11px;flex-shrink:0"><rect x="2" y="2" width="12" height="12" rx="1"/></svg>
+        <span id="obj-count">Objek: 0</span>
+      </div>
+      <div class="stat-chip mode-chip" id="tool-mode">Titik</div>
+    </div>
+
+    <div class="menubar-center">
+      <div class="coord-display" id="coord-display">—, —</div>
+    </div>
+
+    <div class="menubar-right">
+      <button class="info-trigger-btn" id="info-trigger-btn">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 7v5M8 5v.5" stroke-linecap="round"/></svg>
+        Tentang
+      </button>
+      <button class="theme-btn" id="theme-btn" title="Toggle Tema">🌙</button>
+    </div>
+
+  </header>
+
+  <!-- ═══ TOOLBAR (Ribbon) ═══ -->
+  <div class="toolbar">
+
+    <!-- PRIMITIF -->
+    <div class="tb-group-wrap">
+      <div class="tb-tools">
+        <button class="tool-btn active" data-tool="point">
+          <span class="tool-icon">·</span><span>Titik</span>
+        </button>
+        <button class="tool-btn" data-tool="line">
+          <span class="tool-icon">╱</span><span>DDA</span>
+        </button>
+        <button class="tool-btn" data-tool="bresenham">
+          <span class="tool-icon">╱</span><span>Bresnh.</span>
+        </button>
+        <button class="tool-btn" data-tool="circle">
+          <span class="tool-icon">○</span><span>Lingkaran</span>
+        </button>
+        <button class="tool-btn" data-tool="ellipse">
+          <span class="tool-icon">◯</span><span>Elips</span>
+        </button>
+        <button class="tool-btn" data-tool="rect">
+          <span class="tool-icon">□</span><span>Persegi</span>
+        </button>
+        <button class="tool-btn" data-tool="polygon">
+          <span class="tool-icon">⬡</span><span>Poligon</span>
+        </button>
+      </div>
+      <div class="tb-group-label">Primitif</div>
+    </div>
+
+    <!-- FILL & SELECT -->
+    <div class="tb-group-wrap">
+      <div class="tb-tools">
+        <button class="tool-btn" data-tool="fill">
+          <span class="tool-icon">▣</span><span>Flood Fill</span>
+        </button>
+        <button class="tool-btn" data-tool="scanline">
+          <span class="tool-icon">≡</span><span>Scan-Line</span>
+        </button>
+        <button class="tool-btn" data-tool="select">
+          <span class="tool-icon">↖</span><span>Cursor</span>
+        </button>
+      </div>
+      <div class="tb-group-label">Fill & Cursor</div>
+    </div>
+
+    <!-- GAMBAR BEBAS -->
+    <div class="tb-group-wrap">
+      <div class="tb-tools">
+        <button class="tool-btn" data-tool="pencil">
+          <span class="tool-icon">✏</span><span>Pensil</span>
+        </button>
+        <button class="tool-btn" data-tool="eraser">
+          <span class="tool-icon">⬜</span><span>Penghapus</span>
+        </button>
+      </div>
+      <div class="tb-group-label">Gambar Bebas</div>
+    </div>
+
+    <!-- WARNA & KETEBALAN -->
+    <div class="tb-group-wrap">
+      <div class="tb-colors">
+        <div class="color-row-tb">
+          <div class="color-swatch-tb">
+            <label>Stroke</label>
+            <input type="color" id="stroke-color" value="#5b9bff" />
+          </div>
+          <div class="color-swatch-tb">
+            <label>Fill</label>
+            <input type="color" id="fill-color" value="#1a4faa" />
+          </div>
+        </div>
+        <div class="tb-thickness">
+          <label>Tebal</label>
+          <div class="thickness-slider-row">
+            <input type="range" id="pixel-size" min="1" max="8" value="1" style="width:60px;" />
+            <span class="mono-val" id="pixel-size-val">1</span>
+          </div>
         </div>
       </div>
+      <div class="tb-group-label">Warna & Atribut</div>
     </div>
 
-    <!-- ===== PANEL: PRIMITIF ===== -->
-    <div class="panel">
-      <div class="panel-title">Primitif</div>
-      <div class="tool-grid">
-        <button class="tool-btn active" id="tool-point"   data-tool="point">Titik</button>
-        <button class="tool-btn"        id="tool-line"    data-tool="line">Garis (DDA)</button>
-        <button class="tool-btn"        id="tool-circle"  data-tool="circle">Lingkaran</button>
-        <button class="tool-btn"        id="tool-ellipse" data-tool="ellipse">Elips</button>
-        <button class="tool-btn"        id="tool-rect"    data-tool="rect">Persegi</button>
-        <button class="tool-btn"        id="tool-polygon" data-tool="polygon">Poligon</button>
+    <!-- ERASER SIZE (hidden unless eraser active) -->
+    <div class="tb-group-wrap" id="eraser-group" style="display:none;">
+      <div class="tb-eraser">
+        <label>Ukuran Penghapus</label>
+        <div class="thickness-slider-row">
+          <input type="range" id="eraser-size" min="3" max="40" value="12" style="width:80px;" />
+          <span class="mono-val" id="eraser-size-val">12</span>
+        </div>
       </div>
-      <div class="algo-label" id="algo-label">Algoritma: —</div>
+      <div class="tb-group-label">Penghapus</div>
     </div>
 
-    <!-- ===== PANEL: WARNA & OPSI ===== -->
-    <div class="panel">
-      <div class="panel-title">Warna & Tampilan</div>
-      <div class="form-row">
-        <label>Warna Stroke</label>
-        <input type="color" id="stroke-color" value="#2563eb" />
+    <!-- TIPE GARIS -->
+    <div class="tb-group-wrap">
+      <div class="tb-linetype">
+        <label>Tipe Garis</label>
+        <select class="sel-input" id="line-type">
+          <option value="solid">─ Solid</option>
+          <option value="dashed">- - Dashed</option>
+          <option value="dotted">· · · Dotted</option>
+          <option value="dashdot">-·- Dash-Dot</option>
+        </select>
       </div>
-      <div class="form-row">
-        <label>Warna Fill</label>
-        <input type="color" id="fill-color" value="#3b82f6" />
-      </div>
-      <div class="form-row">
-        <label>Tebal Pixel</label>
-        <input type="range" id="pixel-size" min="1" max="4" value="1" />
-        <span class="val-display" id="pixel-size-val">1</span>
-      </div>
-      <div class="form-row">
-        <label>Grid</label>
-        <input type="checkbox" id="show-grid" checked />
-      </div>
-      <div class="form-row">
-        <label>Koordinat</label>
-        <input type="checkbox" id="show-coord" checked />
-      </div>
-      <div class="form-row">
-        <label>Zoom</label>
-        <input type="range" id="zoom" min="20" max="300" value="100" />
-        <span class="val-display" id="zoom-val">100%</span>
-      </div>
+      <div class="tb-group-label">Tipe Garis</div>
     </div>
 
-    <!-- ===== PANEL: FILL ===== -->
-    <div class="panel">
-      <div class="panel-title">Fill Area</div>
-      <div class="tool-grid">
-        <button class="tool-btn" id="tool-fill" data-tool="fill">Flood Fill</button>
-        <button class="tool-btn" id="tool-select" data-tool="select">Seleksi</button>
+    <!-- TAMPILAN TOGGLES -->
+    <div class="tb-group-wrap">
+      <div class="tb-toggles">
+        <label class="toggle-item">
+          <input type="checkbox" id="show-grid" checked />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span>Grid</span>
+        </label>
+        <label class="toggle-item">
+          <input type="checkbox" id="show-coord" checked />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span>Koordinat</span>
+        </label>
+        <label class="toggle-item">
+          <input type="checkbox" id="show-axes" checked />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span>Sumbu</span>
+        </label>
       </div>
-      <div class="hint-text">Gunakan Flood Fill untuk mengisi area objek tertutup.</div>
+      <div class="tb-group-label">Tampilan</div>
     </div>
 
-    <!-- ===== PANEL: TRANSFORMASI ===== -->
-    <div class="panel">
-      <div class="panel-title">Transformasi 2D (Matriks)</div>
-      <div class="selection-row">
-        <button class="icon-btn" id="select-prev">&#9664;</button>
-        <span class="selected-label" id="selected-label">Tidak ada objek</span>
-        <button class="icon-btn" id="select-next">&#9654;</button>
+    <!-- AKSI -->
+    <div class="tb-group-wrap">
+      <div class="tb-actions">
+        <button class="act-btn" id="undo-btn">↩ Undo</button>
+        <button class="act-btn" id="redo-btn">↪ Redo</button>
+        <button class="act-btn accent-blue" id="save-png">⤓ PNG</button>
+        <button class="act-btn danger" id="clear-canvas">⊗ Bersihkan</button>
       </div>
-
-      <div class="form-row">
-        <label>Translasi X</label>
-        <input type="range" id="tx" min="-400" max="400" value="0" />
-        <span class="val-display" id="tx-val">0</span>
-      </div>
-      <div class="form-row">
-        <label>Translasi Y</label>
-        <input type="range" id="ty" min="-400" max="400" value="0" />
-        <span class="val-display" id="ty-val">0</span>
-      </div>
-      <div class="form-row">
-        <label>Rotasi</label>
-        <input type="range" id="rot" min="-180" max="180" value="0" />
-        <span class="val-display" id="rot-val">0°</span>
-      </div>
-      <div class="form-row">
-        <label>Skala</label>
-        <input type="range" id="scale" min="10" max="400" value="100" />
-        <span class="val-display" id="scale-val">1.00×</span>
-      </div>
-
-      <div class="form-row">
-        <label>Tx (manual)</label>
-        <input type="number" class="num-input" id="tx-num" value="0" />
-      </div>
-      <div class="form-row">
-        <label>Ty (manual)</label>
-        <input type="number" class="num-input" id="ty-num" value="0" />
-      </div>
-      <div class="form-row">
-        <label>Rot (°)</label>
-        <input type="number" class="num-input" id="rot-num" value="0" />
-      </div>
-
-      <div class="btn-row">
-        <button class="action-btn" id="reset-transform">Reset Transform</button>
-        <button class="action-btn danger" id="delete-selected">Hapus Objek</button>
-      </div>
-
-      <!-- Matrix display -->
-      <div class="matrix-display" id="matrix-display">
-        <div class="matrix-title">Matriks Transformasi T·R·S</div>
-        <table class="matrix-table" id="matrix-table">
-          <tr><td>1</td><td>0</td><td>0</td></tr>
-          <tr><td>0</td><td>1</td><td>0</td></tr>
-          <tr><td>0</td><td>0</td><td>1</td></tr>
-        </table>
-      </div>
+      <div class="tb-group-label">Aksi</div>
     </div>
 
-    <!-- ===== PANEL: ANIMASI ===== -->
-    <div class="panel">
-      <div class="panel-title">Animasi</div>
-      <div class="btn-row">
-        <button class="action-btn accent" id="toggle-anim">▶ Start</button>
-        <button class="action-btn" id="reset-anim">Reset Posisi</button>
+    <!-- POLYGON CONTROLS (shown when polygon/scanline active) -->
+    <div class="tb-group-wrap" id="polygon-ctrl" style="display:none;">
+      <div class="tb-poly">
+        <button class="act-btn accent" id="finish-polygon">✔ Selesai Poligon</button>
+        <button class="act-btn" id="cancel-polygon">✕ Batal</button>
       </div>
-      <div class="form-row">
-        <label>Kecepatan</label>
-        <input type="range" id="speed" min="1" max="20" value="5" />
-        <span class="val-display" id="speed-val">5</span>
-      </div>
+      <div class="tb-group-label">Poligon</div>
     </div>
 
-    <!-- ===== PANEL: UTILITAS ===== -->
-    <div class="panel">
-      <div class="panel-title">Utilitas</div>
-      <div class="btn-row">
-        <button class="action-btn" id="save-png">Simpan PNG</button>
-        <button class="action-btn danger" id="clear-canvas">Bersihkan</button>
+  </div>
+
+  <!-- ═══ MAIN BODY ═══ -->
+  <div class="main-body">
+
+    <!-- ─── LEFT PANEL ─── -->
+    <aside class="left-panel">
+
+      <div class="panel-tabs">
+        <button class="ptab active" data-tab="transform">Transformasi</button>
+        <button class="ptab" data-tab="anim">Animasi</button>
+        <button class="ptab" data-tab="info">Info</button>
       </div>
-      <div class="btn-row">
-        <button class="action-btn" id="undo-btn">↩ Undo</button>
-        <button class="action-btn" id="redo-btn">↪ Redo</button>
+
+      <!-- TAB: TRANSFORMASI -->
+      <div class="tab-content active" id="tab-transform">
+
+        <div class="panel">
+          <div class="panel-label">Objek Terpilih</div>
+          <div class="obj-nav">
+            <button class="nav-btn" id="select-prev">‹</button>
+            <span class="obj-label" id="selected-label">Tidak ada</span>
+            <button class="nav-btn" id="select-next">›</button>
+          </div>
+          <div class="btn-pair">
+            <button class="ctrl-btn" id="reset-transform">↺ Reset</button>
+            <button class="ctrl-btn danger" id="delete-selected">✕ Hapus</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-label">Translasi & Rotasi</div>
+          <div class="form-row">
+            <label class="form-label">Trans X</label>
+            <input type="range" id="tx" min="-600" max="600" value="0" />
+            <span class="val-display" id="tx-val">0</span>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Trans Y</label>
+            <input type="range" id="ty" min="-600" max="600" value="0" />
+            <span class="val-display" id="ty-val">0</span>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Rotasi</label>
+            <input type="range" id="rot" min="-180" max="180" value="0" />
+            <span class="val-display" id="rot-val">0°</span>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Skala</label>
+            <input type="range" id="scale" min="10" max="400" value="100" />
+            <span class="val-display" id="scale-val">1.00×</span>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Shear X</label>
+            <input type="range" id="shx" min="-200" max="200" value="0" />
+            <span class="val-display" id="shx-val">0</span>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Shear Y</label>
+            <input type="range" id="shy" min="-200" max="200" value="0" />
+            <span class="val-display" id="shy-val">0</span>
+          </div>
+          <div class="manual-inputs">
+            <div class="mini-input-group">
+              <label>Tx</label>
+              <input type="number" class="mini-inp" id="tx-num" value="0" />
+            </div>
+            <div class="mini-input-group">
+              <label>Ty</label>
+              <input type="number" class="mini-inp" id="ty-num" value="0" />
+            </div>
+            <div class="mini-input-group">
+              <label>Rot°</label>
+              <input type="number" class="mini-inp" id="rot-num" value="0" />
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-label">Refleksi</div>
+          <div class="reflect-grid">
+            <button class="refl-btn" id="reflect-x">Sumbu X</button>
+            <button class="refl-btn" id="reflect-y">Sumbu Y</button>
+            <button class="refl-btn" id="reflect-origin">Origin</button>
+            <button class="refl-btn" id="reflect-yx">y = x</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="matrix-box" id="matrix-display">
+            <div class="matrix-caption">Matriks T · R · S · Sh</div>
+            <table class="m-table" id="matrix-table">
+              <tr><td>1</td><td>0</td><td>0</td></tr>
+              <tr><td>0</td><td>1</td><td>0</td></tr>
+              <tr><td>0</td><td>0</td><td>1</td></tr>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /tab-transform -->
+
+      <!-- TAB: ANIMASI -->
+      <div class="tab-content" id="tab-anim">
+        <div class="panel">
+          <div class="panel-label">Animasi Bounce</div>
+          <div class="btn-pair">
+            <button class="ctrl-btn accent" id="toggle-anim">▶ Start</button>
+            <button class="ctrl-btn" id="reset-anim">⊙ Reset</button>
+          </div>
+          <div class="speed-row mt4">
+            <label>Kecepatan</label>
+            <input type="range" id="speed" min="1" max="20" value="5" />
+            <span class="mono-val" id="speed-val">5</span>
+          </div>
+        </div>
+      </div><!-- /tab-anim -->
+
+      <!-- TAB: INFO -->
+      <div class="tab-content" id="tab-info">
+        <div class="panel">
+          <div class="panel-label">Kelompok 2</div>
+          <div class="member-list">
+            <div class="member-item">Rakha Taufiqurrahman F A</div>
+            <div class="member-item">Taufiq Candra Kurniawan</div>
+            <div class="member-item">Gorbi Ello Pasaribu</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-label">Algoritma Aktif</div>
+          <div class="algo-badge" id="algo-label" style="width:100%;">—</div>
+        </div>
+        <div class="panel">
+          <div class="panel-label">Cakupan Materi</div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:10.5px;color:var(--text2);line-height:1.35;">
+            <div>01–02: canvas raster, koordinat, input mouse, output layar</div>
+            <div>03–04: titik, DDA, Bresenham, midpoint circle, midpoint ellipse</div>
+            <div>05–06: flood fill, scan-line fill, warna, ketebalan, tipe garis</div>
+            <div>07–09: translasi, rotasi, skala, matriks homogen, shear, refleksi</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-label">Keyboard Shortcut</div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:10.5px;color:var(--text2);">
+            <div style="display:flex;justify-content:space-between;"><span>Undo</span><span class="kbd">Ctrl+Z</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Redo</span><span class="kbd">Ctrl+Y</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Hapus Objek</span><span class="kbd">Del</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Pensil</span><span class="kbd">P</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Penghapus</span><span class="kbd">E</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Cursor</span><span class="kbd">V</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Flood Fill</span><span class="kbd">F</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Garis DDA</span><span class="kbd">L</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Lingkaran</span><span class="kbd">C</span></div>
+          </div>
+        </div>
+      </div><!-- /tab-info -->
+
+    </aside>
+
+    <!-- ─── CANVAS ─── -->
+    <main class="canvas-area">
+      <div class="canvas-wrap">
+        <canvas id="canvas" width="1400" height="900"></canvas>
+
+        <div class="zoombar">
+          <label>Zoom</label>
+          <button class="zoom-icon-btn" id="zoom-out-btn" title="Zoom Out">−</button>
+          <input type="range" id="zoom" min="20" max="300" value="100" />
+          <button class="zoom-icon-btn" id="zoom-in-btn" title="Zoom In">+</button>
+          <span class="zoom-val" id="zoom-val">100%</span>
+        </div>
       </div>
-      <!-- Polygon selesai -->
-      <div id="polygon-ctrl" style="display:none;">
-        <button class="action-btn accent" id="finish-polygon">✔ Selesai Polygon</button>
-        <button class="action-btn" id="cancel-polygon">✖ Batal</button>
+
+      <div class="statusbar">
+        <span class="status-dot" id="status-dot"></span>
+        <span class="status-msg" id="status-msg">Siap — pilih primitif dan klik canvas untuk menggambar.</span>
       </div>
+    </main>
+
+  </div><!-- /main-body -->
+</div><!-- /app -->
+
+<!-- ═══ INFO PANEL (slide-in) ═══ -->
+<div class="info-panel-overlay" id="info-overlay"></div>
+<aside class="info-panel" id="info-panel">
+  <div class="info-panel-header">
+    <div>
+      <div class="info-panel-title">GrafKom 2D — Dokumentasi</div>
+      <div class="info-panel-subtitle">Grafika Komputer · Kelompok 2</div>
+    </div>
+    <button class="close-btn" id="close-info-btn">✕</button>
+  </div>
+
+  <div class="info-content">
+
+    <div class="info-section">
+      <div class="info-section-title">01 — Tentang Proyek</div>
+      <p>Proyek akhir mata kuliah Grafika Komputer yang mengimplementasikan berbagai algoritma fundamental grafika 2D secara interaktif berbasis web menggunakan HTML5 Canvas API dan JavaScript murni.</p>
+      <p>Rendering dilakukan secara <strong>pixel-by-pixel</strong> tanpa memanfaatkan fungsi drawing bawaan Canvas (kecuali <code>fillRect</code> untuk plot piksel), sehingga setiap algoritma terlihat cara kerjanya secara nyata.</p>
     </div>
 
-  </aside>
+    <div class="info-section">
+      <div class="info-section-title">02 — Algoritma yang Diimplementasikan</div>
+      <table class="info-table">
+        <thead>
+          <tr><th>Materi</th><th>Algoritma</th><th>Deskripsi Singkat</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>03</td>
+            <td><span class="algo-tag">DDA Line</span></td>
+            <td>Digital Differential Analyzer — interpolasi floating-point. steps = max(|Δx|, |Δy|).</td>
+          </tr>
+          <tr>
+            <td>03</td>
+            <td><span class="algo-tag">Bresenham</span></td>
+            <td>Algoritma garis integer-only. Decision variable p, lebih efisien dari DDA.</td>
+          </tr>
+          <tr>
+            <td>04</td>
+            <td><span class="algo-tag">Midpoint Circle</span></td>
+            <td>Berbasis Bresenham, mulai dari (0, r), manfaatkan 8-fold symmetry.</td>
+          </tr>
+          <tr>
+            <td>04</td>
+            <td><span class="algo-tag">Midpoint Ellipse</span></td>
+            <td>Perluasan lingkaran untuk elips: x²/rx² + y²/ry² = 1. 2 region, 4-fold symmetry.</td>
+          </tr>
+          <tr>
+            <td>05</td>
+            <td><span class="algo-tag">Flood Fill</span></td>
+            <td>Scanline Flood Fill berbasis antrian (queue-based), menghindari stack overflow rekursif.</td>
+          </tr>
+          <tr>
+            <td>05</td>
+            <td><span class="algo-tag">Scan-Line Fill</span></td>
+            <td>Scan-Line Polygon Fill dengan Active Edge List (AEL). Berbasis geometri, bukan warna piksel.</td>
+          </tr>
+          <tr>
+            <td>—</td>
+            <td><span class="algo-tag">Pensil Bebas</span></td>
+            <td>Freehand drawing menggunakan DDA stroke dengan round brush tip, disimpan di paint layer terpisah.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <!-- ===== AREA CANVAS ===== -->
-  <main class="canvas-area">
-    <div class="canvas-toolbar">
-      <span class="toolbar-info" id="obj-count">Objek: 0</span>
-      <span class="toolbar-info" id="tool-mode">Mode: Titik</span>
-      <span class="toolbar-info" id="coord-display">( — , — )</span>
+    <div class="info-section">
+      <div class="info-section-title">03 — Atribut Output Primitif (Materi 06)</div>
+      <p>Tipe garis diimplementasikan di level piksel (bukan CSS <code>setLineDash</code>) menggunakan pola on/off:</p>
+      <ul class="feature-list">
+        <li><strong>Solid</strong> — semua piksel aktif</li>
+        <li><strong>Dashed</strong> — pola 6 ON, 4 OFF</li>
+        <li><strong>Dotted</strong> — pola 1 ON, 3 OFF</li>
+        <li><strong>Dash-Dot</strong> — pola 6 ON, 3 OFF, 1 ON, 3 OFF</li>
+      </ul>
     </div>
-    <div class="canvas-container">
-      <canvas id="canvas" width="1200" height="740"></canvas>
-    </div>
-    <div class="statusbar">
-      <span id="status-msg">Siap — pilih primitif dan klik canvas untuk menggambar.</span>
-    </div>
-  </main>
 
-</div>
+    <div class="info-section">
+      <div class="info-section-title">04 — Transformasi 2D (Materi 07–09)</div>
+      <p>Semua transformasi menggunakan <strong>koordinat homogen 3×3</strong>. Matriks gabungan: <code>M = T · R · S · Sh</code></p>
+      <p>Urutan aplikasi (kanan ke kiri): <strong>Shear → Scale → Rotate → Translate</strong>. Rotasi selalu terhadap pusat objek (origin lokal).</p>
+      <table class="info-table">
+        <thead><tr><th>Transformasi</th><th>Parameter</th></tr></thead>
+        <tbody>
+          <tr><td>Translasi (T)</td><td>tx, ty dalam piksel</td></tr>
+          <tr><td>Rotasi (R)</td><td>sudut dalam derajat, terhadap pusat objek</td></tr>
+          <tr><td>Skala (S)</td><td>faktor skala uniform (0.1× – 4.0×)</td></tr>
+          <tr><td>Shear (Sh)</td><td>shx dan shy dalam persen (−200 s/d +200)</td></tr>
+          <tr><td>Refleksi</td><td>Sumbu X, Y, Origin, atau garis y=x</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-section">
+      <div class="info-section-title">05 — Cara Penggunaan</div>
+      <ul class="feature-list">
+        <li>Pilih alat dari toolbar di atas, lalu klik/drag di canvas untuk menggambar.</li>
+        <li>Untuk <strong>Poligon/Scan-Line</strong>: klik satu per satu titik, lalu tekan <strong>Selesai Poligon</strong>.</li>
+        <li>Untuk <strong>Flood Fill</strong>: klik area terbuka di canvas — akan diisi warna Fill.</li>
+        <li><strong>Pensil</strong>: tahan dan gerak mouse untuk menggambar bebas seperti Paint.</li>
+        <li><strong>Penghapus</strong>: tahan dan gerak mouse untuk menghapus coretan/fill. Ukuran penghapus bisa disesuaikan.</li>
+        <li>Gunakan tab <strong>Transformasi</strong> di panel kiri untuk mengubah posisi, rotasi, skala, dan shear objek terpilih.</li>
+        <li>Shortcut keyboard: <strong>V</strong>=Cursor, <strong>P</strong>=Pensil, <strong>E</strong>=Penghapus, <strong>F</strong>=Fill, <strong>L</strong>=Garis, <strong>C</strong>=Lingkaran.</li>
+      </ul>
+    </div>
+
+    <div class="info-section">
+      <div class="info-section-title">06 — Kelompok 2</div>
+      <ul class="feature-list">
+        <li>Rakha Taufiqurrahman F A</li>
+        <li>Taufiq Candra Kurniawan</li>
+        <li>Gorbi Ello Pasaribu</li>
+      </ul>
+    </div>
+
+  </div>
+</aside>
 
 <script src="app.js"></script>
 </body>
